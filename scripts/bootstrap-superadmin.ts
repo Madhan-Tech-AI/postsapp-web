@@ -108,14 +108,16 @@ async function main() {
     process.exit(1)
   }
 
-  const password = await questionHidden('Password (min 10 chars, letters + digits): ')
+  const rawPassword = await questionHidden('Password (min 10 chars, letters + digits): ')
+  const password = rawPassword.replace(/[\r\n]/g, '').trim()
   const passwordError = await validatePassword(password)
   if (passwordError) {
     console.error(`❌ ${passwordError}`)
     process.exit(1)
   }
 
-  const confirmPassword = await questionHidden('Confirm password: ')
+  const rawConfirm = await questionHidden('Confirm password: ')
+  const confirmPassword = rawConfirm.replace(/[\r\n]/g, '').trim()
   if (password !== confirmPassword) {
     console.error('❌ Passwords do not match')
     process.exit(1)

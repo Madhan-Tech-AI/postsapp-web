@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { setRequestLocale } from 'next-intl/server'
 import { getHomepageFeed, getPublicCategories } from '@/modules/public/public-queries'
 import { getTrendingAndMostRead } from '@/modules/engagement/trending.service'
 import { HeroNewsCard } from '@/components/news/hero-news-card'
@@ -50,6 +51,7 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
 
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params
+  setRequestLocale(locale)
   const lang = locale as LanguageCode
   const isTa = lang === 'ta'
 
