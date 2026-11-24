@@ -1,11 +1,7 @@
-import { getTranslations } from 'next-intl/server'
+import React from 'react'
 
-interface NotFoundProps {
-  params: Promise<{ locale: string }>
-}
-
-export default async function NotFound() {
-  // Note: locale detection in not-found is limited; use English fallback
+export default function NotFound() {
+  // Global root 404 page with navigation links to both language editions
   return (
     <main
       id="main-content"

@@ -11,9 +11,9 @@ interface AdminLayoutProps {
 export default async function AdminLayout({ children }: AdminLayoutProps) {
   const profile = await getAuthenticatedUserProfile()
 
-  // Guard: editorial workspace requires stored staff role
+  // If not authenticated or not editorial staff (e.g. on /admin/login), render children without sidebar
   if (!profile || !['author', 'editor', 'super_admin'].includes(profile.role)) {
-    redirect('/admin/login')
+    return <>{children}</>
   }
 
   const isSuperAdmin = profile.role === 'super_admin'

@@ -53,6 +53,14 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   // ----------------------------------------------------------------
+  // 2.5. Redirect accidental locale-prefixed admin routes: /en/admin/... -> /admin/...
+  // ----------------------------------------------------------------
+  if (pathname.startsWith('/en/admin') || pathname.startsWith('/ta/admin')) {
+    const cleanPath = pathname.replace(/^\/(en|ta)/, '')
+    return NextResponse.redirect(new URL(cleanPath, request.url))
+  }
+
+  // ----------------------------------------------------------------
   // 3. Root redirect — send '/' to language-prefixed home
   // ----------------------------------------------------------------
   if (pathname === '/') {
