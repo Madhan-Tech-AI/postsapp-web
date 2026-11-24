@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { LoginForm } from '@/modules/auth/components/login-form'
 
@@ -16,7 +17,9 @@ export default async function LoginPage({ params }: LoginPageProps) {
   const { locale } = await params
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-950">
-      <LoginForm locale={locale} />
+      <Suspense fallback={<div className="w-full max-w-md p-8 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 animate-pulse h-96" />}>
+        <LoginForm locale={locale} />
+      </Suspense>
     </div>
   )
 }

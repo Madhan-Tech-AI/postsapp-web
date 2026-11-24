@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { getAuthenticatedUserProfile } from '@/lib/supabase/server'
@@ -26,7 +27,9 @@ export default async function AdminLoginPage() {
             Editorial CMS
           </span>
         </div>
-        <LoginForm isAdmin={true} />
+        <Suspense fallback={<div className="w-full max-w-md p-8 bg-gray-800 rounded-xl shadow-lg animate-pulse h-96" />}>
+          <LoginForm isAdmin={true} />
+        </Suspense>
       </div>
     </div>
   )

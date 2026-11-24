@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { searchPublishedArticles } from '@/modules/search/search.service'
 import { getPublicCategories } from '@/modules/public/public-queries'
@@ -62,13 +62,15 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
         </p>
       </header>
 
-      <SearchClient
-        locale={locale}
-        initialQuery={query}
-        initialCategory={category}
-        initialArticles={searchResult.articles}
-        categories={categories as any}
-      />
+      <Suspense fallback={<div className="h-64 animate-pulse bg-gray-100 dark:bg-gray-900 rounded-lg" />}>
+        <SearchClient
+          locale={locale}
+          initialQuery={query}
+          initialCategory={category}
+          initialArticles={searchResult.articles}
+          categories={categories as any}
+        />
+      </Suspense>
     </main>
   )
 }
