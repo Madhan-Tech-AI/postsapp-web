@@ -48,7 +48,7 @@ async function main() {
     { group_key: 'lifestyle',     language: 'en', name: 'Lifestyle',     slug: 'lifestyle',     sort_order: 10 },
     // Tamil
     { group_key: 'national',      language: 'ta', name: 'தேசியம்',         slug: 'theciyam',       sort_order: 1 },
-    { group_key: 'international', language: 'ta', name: 'சர்வதேசம்',       slug: 'carvathēcam',    sort_order: 2 },
+    { group_key: 'international', language: 'ta', name: 'சர்வதேசம்',       slug: 'carvathecam',    sort_order: 2 },
     { group_key: 'politics',      language: 'ta', name: 'அரசியல்',         slug: 'araciiyal',      sort_order: 3 },
     { group_key: 'technology',    language: 'ta', name: 'தொழில்நுட்பம்',   slug: 'thozhilnudpam',  sort_order: 4 },
     { group_key: 'business',      language: 'ta', name: 'வணிகம்',          slug: 'vanikam',        sort_order: 5 },

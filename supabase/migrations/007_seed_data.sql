@@ -23,7 +23,7 @@ INSERT INTO public.categories (group_key, language, name, slug, sort_order) VALU
   ('lifestyle',      'en', 'Lifestyle',      'lifestyle',      10),
   -- Tamil
   ('national',       'ta', 'தேசியம்',         'theciyam',       1),
-  ('international',  'ta', 'சர்வதேசம்',       'carvathēcam',    2),
+  ('international',  'ta', 'சர்வதேசம்',       'carvathecam',    2),
   ('politics',       'ta', 'அரசியல்',         'araciiyal',      3),
   ('technology',     'ta', 'தொழில்நுட்பம்',   'thozhilnudpam',  4),
   ('business',       'ta', 'வணிகம்',          'vanikam',        5),
