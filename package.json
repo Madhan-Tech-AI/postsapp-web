@@ -60,13 +60,16 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
+    "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@types/node": "^22.15.21",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
     "@vitejs/plugin-react": "^4.5.1",
+    "@vitest/ui": "^3.2.0",
     "autoprefixer": "^10.4.21",
+    "dotenv": "^16.5.0",
     "eslint": "^9.26.0",
     "eslint-config-next": "15.3.3",
     "husky": "^9.1.7",
@@ -75,8 +78,6 @@
     "tailwindcss": "^3.4.17",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
-    "vitest": "^3.2.0",
-    "@vitest/ui": "^3.2.0",
-    "dotenv": "^16.5.0"
+    "vitest": "^3.2.0"
   }
 }
