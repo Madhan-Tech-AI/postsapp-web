@@ -28,19 +28,17 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   const messages = await getMessages()
 
   return (
-    <html lang={locale} dir="ltr">
-      <body className="min-h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 antialiased selection:bg-primary-500 selection:text-white">
-        <a href="#main-content" className="skip-link">
-          {locale === 'ta' ? 'முக்கிய உள்ளடக்கத்திற்குச் செல்லவும்' : 'Skip to main content'}
-        </a>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <PublicHeader locale={locale as LanguageCode} />
-          <div className="flex-1">
-            {children}
-          </div>
-          <PublicFooter locale={locale as LanguageCode} />
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 antialiased selection:bg-primary-500 selection:text-white" lang={locale} dir="ltr">
+      <a href="#main-content" className="skip-link">
+        {locale === 'ta' ? 'முக்கிய உள்ளடக்கத்திற்குச் செல்லவும்' : 'Skip to main content'}
+      </a>
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        <PublicHeader locale={locale as LanguageCode} />
+        <div className="flex-1">
+          {children}
+        </div>
+        <PublicFooter locale={locale as LanguageCode} />
+      </NextIntlClientProvider>
+    </div>
   )
 }

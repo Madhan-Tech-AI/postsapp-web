@@ -1,34 +1,5 @@
 import type { Metadata } from 'next'
-import { Noto_Sans, Noto_Serif, Noto_Sans_Tamil, Noto_Serif_Tamil } from 'next/font/google'
 import './globals.css'
-
-const notoSans = Noto_Sans({
-  subsets: ['latin'],
-  variable: '--font-noto-sans',
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-})
-
-const notoSerif = Noto_Serif({
-  subsets: ['latin'],
-  variable: '--font-noto-serif',
-  display: 'swap',
-  weight: ['400', '700'],
-})
-
-const notoSansTamil = Noto_Sans_Tamil({
-  subsets: ['tamil'],
-  variable: '--font-noto-sans-tamil',
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-})
-
-const notoSerifTamil = Noto_Serif_Tamil({
-  subsets: ['tamil'],
-  variable: '--font-noto-serif-tamil',
-  display: 'swap',
-  weight: ['400', '700'],
-})
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://postsapp.in'),
@@ -49,10 +20,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html
-      className={`${notoSans.variable} ${notoSerif.variable} ${notoSansTamil.variable} ${notoSerifTamil.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Serif:wght@400;700&family=Noto+Serif+Tamil:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="font-sans antialiased bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
         {children}
       </body>
