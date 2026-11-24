@@ -13,17 +13,21 @@ export const languageCodeSchema = z.enum(['en', 'ta'])
 export const userRoleSchema = z.enum(['reader', 'author', 'editor', 'super_admin'])
 export const articleStatusSchema = z.enum(['draft', 'published', 'archived'])
 
+export type LanguageCode = z.infer<typeof languageCodeSchema>
+export type UserRole = z.infer<typeof userRoleSchema>
+export type ArticleStatus = z.infer<typeof articleStatusSchema>
+
 // ============================================================
 // Auth schemas
 // ============================================================
 
 export const loginSchema = z.object({
-  email: z.string().email().max(254).trim().toLowerCase(),
+  email: z.string().trim().toLowerCase().email().max(254),
   password: z.string().min(1).max(72),
 })
 
 export const registerSchema = z.object({
-  email: z.string().email().max(254).trim().toLowerCase(),
+  email: z.string().trim().toLowerCase().email().max(254),
   password: z.string()
     .min(10, 'Password must be at least 10 characters')
     .max(72)
@@ -34,7 +38,7 @@ export const registerSchema = z.object({
 })
 
 export const resetPasswordSchema = z.object({
-  email: z.string().email().max(254).trim().toLowerCase(),
+  email: z.string().trim().toLowerCase().email().max(254),
 })
 
 export const updatePasswordSchema = z.object({
