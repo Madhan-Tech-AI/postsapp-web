@@ -4,6 +4,9 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getPublishedArticleBySlug } from '@/modules/public/public-queries'
+import { getAuthenticatedUser } from '@/lib/supabase/server'
+import { getArticleLikeStatus } from '@/modules/engagement/engagement.service'
+import { LikeButton } from '@/modules/engagement/components/like-button'
 import { ArticleRenderer } from '@/modules/articles/components/article-renderer'
 import { NewsCard } from '@/components/news/news-card'
 import { ShareButtons } from '@/components/news/share-buttons'
@@ -72,15 +75,20 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { locale, slug } = await params
-  const { article, translationSlug, relatedArticles } = await getPublishedArticleBySlug(
-    locale as LanguageCode,
-    slug
-  )
+  const [
+    { article, translationSlug, relatedArticles },
+    user,
+  ] = await Promise.all([
+    getPublishedArticleBySlug(locale as LanguageCode, slug),
+    getAuthenticatedUser(),
+  ])
 
   // Hard gate: draft or archived articles return true 404 (Section 5 Principle 8 & Section 8)
   if (!article) {
     notFound()
   }
+
+  const likeStatus = await getArticleLikeStatus(article.id, user?.id)
 
   const isTa = locale === 'ta'
   const imageUrl = getStorageUrl(article.cover_image_path, 'article-featured')
@@ -223,19 +231,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
           {/* Engagement / Footer Bar (Like & Share) */}
           <div className="my-10 pt-6 border-t border-b border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-between gap-4 py-4">
-            <div className="flex items-center space-x-3">
-              <Link
-                href={`/${locale}/auth/login?next=/${locale}/article/${article.slug}`}
-                className="inline-flex items-center space-x-2 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-700 hover:border-red-500 hover:text-red-500 text-sm font-semibold transition-colors"
-                aria-label="Like article (requires login)"
-              >
-                <span>❤️</span>
-                <span>{article.like_count}</span>
-                <span className="text-xs font-normal text-gray-500">
-                  {isTa ? 'விருப்பங்கள்' : 'Likes'}
-                </span>
-              </Link>
-            </div>
+            <LikeButton
+              articleId={article.id}
+              initialLiked={likeStatus.liked}
+              initialCount={likeStatus.likeCount}
+              locale={locale}
+              slug={article.slug}
+              isAuthenticated={!!user}
+            />
 
             <ShareButtons
               url={canonicalUrl}

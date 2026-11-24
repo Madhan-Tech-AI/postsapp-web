@@ -16,6 +16,7 @@ export function LoginForm({ isAdmin = false, locale = 'en' }: LoginFormProps) {
   const searchParams = useSearchParams()
   const next = searchParams.get('next') ?? (isAdmin ? '/admin' : `/${locale}`)
   const urlError = searchParams.get('error')
+  const reason = searchParams.get('reason')
 
   const [state, formAction, isPending] = useActionState(loginAction, {
     success: false,
@@ -34,6 +35,16 @@ export function LoginForm({ isAdmin = false, locale = 'en' }: LoginFormProps) {
             : 'Welcome back to PostsApp'}
         </p>
       </div>
+
+      {reason === 'like' && (
+        <div
+          role="status"
+          className="mb-4 p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-lg text-sm text-amber-800 dark:text-amber-300 flex items-center space-x-2"
+        >
+          <span>❤️</span>
+          <span>{t('login_to_like')}</span>
+        </div>
+      )}
 
       {state.error && (
         <div
