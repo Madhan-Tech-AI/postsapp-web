@@ -181,7 +181,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 <div>
                   <div className="font-semibold text-gray-900 dark:text-white text-sm">
                     {authorProfileHref ? (
-                      <Link href={authorProfileHref} className="hover:text-primary-600 hover:underline">
+                      <Link href={authorProfileHref as any} className="hover:text-primary-600 hover:underline">
                         {article.author_display_name}
                       </Link>
                     ) : (
