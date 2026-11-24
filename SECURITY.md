@@ -103,6 +103,27 @@ YouTube embeds use `youtube-nocookie.com` and are allowed only in the article re
 
 ---
 
+## Section 12: Reference Application Weaknesses & PostsApp Guards
+
+The legacy reference panels contained 12 security weaknesses that are explicitly guarded against in PostsApp V1.0:
+
+| # | Reference Weakness | Risk Level | PostsApp Architectural Guard |
+|---|---|---|---|
+| **1** | Client-submitted author IDs & roles | **CRITICAL** | Authorization ≠ Authentication. Roles are stored in `profiles.role` in PostgreSQL. Server actions & RLS strictly derive `user_id` from `auth.uid()`, never from request payloads. |
+| **2** | Storing raw user HTML & rendering via `dangerouslySetInnerHTML` | **CRITICAL** | ProseMirror/TipTap JSON in JSONB is the single source of truth. Rendered through a controlled AST React component tree with zero `dangerouslySetInnerHTML`. Validated against `tiptapDocumentSchema` allowlist. |
+| **3** | Service-role key leaked in client bundle | **CRITICAL** | `SUPABASE_SERVICE_ROLE_KEY` is server-only (`import 'server-only'`). No `NEXT_PUBLIC_` prefix. Gitleaks pre-commit hooks and CI scan bundles to reject any client leaks. |
+| **4** | Missing or permissive Row Level Security (RLS) | **CRITICAL** | RLS is enabled and forced on **all 14 tables and views** (`ALTER TABLE ... FORCE ROW LEVEL SECURITY`). Default deny with strict granular policies per role. |
+| **5** | SQL injection & `search_path` poisoning | **HIGH** | All stored procedures and triggers are declared with `SECURITY DEFINER SET search_path = ''`. Queries use parameterized Supabase PostgREST statements. |
+| **6** | Disguised file uploads & EXIF metadata leakage | **HIGH** | Magic bytes inspection rejects disguised files (`FF D8 FF` for JPEG, `89 50 4E 47` for PNG, `RIFF...WEBP` for WebP). `sharp` re-encodes images and strips all EXIF/GPS metadata. Server generates random UUID storage paths. |
+| **7** | Client-side counter increments (view/like spoofing) | **HIGH** | `articles.view_count` and `like_count` are read-only display caches maintained exclusively by database triggers and stored procedures. Client-side increments are impossible. |
+| **8** | Anonymous like spam / multiple likes per user | **MEDIUM** | Likes require registered reader authentication. PostgreSQL enforces `UNIQUE (article_id, user_id)` on `article_likes`. Anonymous clicks redirect to login. |
+| **9** | Unrestricted public staff registration | **CRITICAL** | Public registration triggers `handle_new_user()` which hardcodes `role = 'reader'`. Editorial staff (`author`, `editor`) can only be created via SuperAdmin invite links. |
+| **10** | Last SuperAdmin lockout | **HIGH** | `change_user_role()` stored procedure counts remaining SuperAdmins and throws an exception if an operation would demote or deactivate the last SuperAdmin. |
+| **11** | Unaudited privileged mutations & tampering | **HIGH** | `audit_logs` is append-only with no `UPDATE` or `DELETE` permissions. Every publish, unpublish, role change, setting update, and delete writes an immutable audit record. |
+| **12** | Bot-driven view inflating & raw IP storage | **MEDIUM** | Bot filter detects and drops crawlers. Rotating salted daily hash (`SHA-256(salt || date || ip || user_agent)`) creates ephemeral dedup keys without storing raw reader IP addresses. |
+
+---
+
 ## Known Non-Issues (by design)
 
 - `anon` key is in browser JavaScript — this is by design. It has no privileges beyond what RLS allows (read published articles, categories, tags).

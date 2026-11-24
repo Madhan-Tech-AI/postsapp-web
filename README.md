@@ -72,6 +72,7 @@ scripts/
   seed.ts                   # Category + settings seed
 docs/
   permissions-matrix.md
+  bilingual-architecture.md
 ```
 
 ## Architecture
@@ -158,6 +159,8 @@ Migrations are in `supabase/migrations/` and run in order:
 | `005_rls_policies.sql` | Row Level Security — default deny + explicit allow per role |
 | `006_storage_buckets_and_policies.sql` | Storage buckets + per-bucket RLS |
 | `007_seed_data.sql` | 10 categories × EN + TA, default site settings |
+| `008_publishing_engine.sql` | Atomic publishing/unpublishing transaction stored procedures |
+| `009_like_count_trigger.sql` | Database trigger maintenance of articles.like_count on insert/delete |
 
 ## Environment Variables
 
