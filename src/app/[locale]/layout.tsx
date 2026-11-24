@@ -1,6 +1,10 @@
+import React from 'react'
 import { NextIntlClientProvider } from 'next-intl'
-import { getMessages, getLocale } from 'next-intl/server'
+import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { PublicHeader } from '@/components/layout/public-header'
+import { PublicFooter } from '@/components/layout/public-footer'
+import type { LanguageCode } from '@/lib/schemas'
 
 const locales = ['en', 'ta'] as const
 type Locale = typeof locales[number]
@@ -25,12 +29,16 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
 
   return (
     <html lang={locale} dir="ltr">
-      <body>
+      <body className="min-h-screen flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 antialiased selection:bg-primary-500 selection:text-white">
         <a href="#main-content" className="skip-link">
-          Skip to main content
+          {locale === 'ta' ? 'முக்கிய உள்ளடக்கத்திற்குச் செல்லவும்' : 'Skip to main content'}
         </a>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
+          <PublicHeader locale={locale as LanguageCode} />
+          <div className="flex-1">
+            {children}
+          </div>
+          <PublicFooter locale={locale as LanguageCode} />
         </NextIntlClientProvider>
       </body>
     </html>
