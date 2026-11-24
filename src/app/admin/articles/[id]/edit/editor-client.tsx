@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { TiptapCanvas } from '@/modules/articles/editor/tiptap-canvas'
 import { ArticleRenderer } from '@/modules/articles/components/article-renderer'
-import { updateArticleAction } from '@/modules/articles/actions'
+import { updateArticleAction, publishArticleAction, unpublishArticleAction } from '@/modules/articles/actions'
 import type { UserRole, LanguageCode, ArticleStatus } from '@/lib/schemas'
 
 interface EditorClientProps {
@@ -48,6 +48,9 @@ export function EditorClient({
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'offline'>('saved')
   const [isDirty, setIsDirty] = useState(false)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+  const [showPublishModal, setShowPublishModal] = useState(false)
+  const [currentArticleStatus, setCurrentArticleStatus] = useState<ArticleStatus>(initialArticle.status)
+  const [publishNote, setPublishNote] = useState('')
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [isPending, startTransition] = useTransition()
 
@@ -152,17 +155,47 @@ export function EditorClient({
     }, 4000) // 4s debounced autosave
   }
 
-  // Unsaved changes guard
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (isDirty) {
-        e.preventDefault()
-        e.returnValue = ''
+  // Validation checklist for publishing
+  const hasTitle = title.trim().length > 0
+  const hasDesc = shortDescription.trim().length > 0
+  const hasSlug = /^[a-z0-9-]+$/.test(slug)
+  const hasCategory = Boolean(categoryId)
+  const hasCover = coverImagePath.trim().length > 0
+  const hasContent = Boolean(contentJson?.content && contentJson.content.length > 0)
+  const canPublish = hasTitle && hasDesc && hasSlug && hasCategory && hasCover && hasContent
+
+  // Handle Publish
+  const handlePublish = async () => {
+    setFeedbackMessage(null)
+    startTransition(async () => {
+      // First save latest draft
+      await saveDraft(false)
+      const res = await publishArticleAction(initialArticle.id, publishNote || undefined)
+      if (res.success) {
+        setCurrentArticleStatus('published')
+        setShowPublishModal(false)
+        setFeedbackMessage({ type: 'success', text: 'Article published live successfully!' })
+        setTimeout(() => setFeedbackMessage(null), 4000)
+      } else {
+        setFeedbackMessage({ type: 'error', text: res.error || 'Failed to publish article' })
       }
-    }
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-  }, [isDirty])
+    })
+  }
+
+  // Handle Unpublish (Archive)
+  const handleUnpublish = async () => {
+    setFeedbackMessage(null)
+    startTransition(async () => {
+      const res = await unpublishArticleAction(initialArticle.id, 'Unpublished from editor')
+      if (res.success) {
+        setCurrentArticleStatus('archived')
+        setFeedbackMessage({ type: 'success', text: 'Article moved to archive (unlisted from public view).' })
+        setTimeout(() => setFeedbackMessage(null), 4000)
+      } else {
+        setFeedbackMessage({ type: 'error', text: res.error || 'Failed to unpublish article' })
+      }
+    })
+  }
 
   return (
     <div className="space-y-4">
@@ -209,10 +242,32 @@ export function EditorClient({
             type="button"
             onClick={() => saveDraft(false)}
             disabled={isPending}
-            className="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg text-xs font-semibold"
+            className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg text-xs font-semibold"
           >
             Save Draft
           </button>
+
+          {/* Publish / Republish Trigger */}
+          <button
+            type="button"
+            onClick={() => setShowPublishModal(true)}
+            disabled={isPending}
+            className="px-4 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors"
+          >
+            {currentArticleStatus === 'published' ? 'Republish' : 'Publish Article'}
+          </button>
+
+          {/* Unpublish button if live */}
+          {currentArticleStatus === 'published' && (
+            <button
+              type="button"
+              onClick={handleUnpublish}
+              disabled={isPending}
+              className="px-3 py-1.5 border border-amber-300 text-amber-700 dark:text-amber-400 hover:bg-amber-50 rounded-lg text-xs font-semibold"
+            >
+              Unpublish
+            </button>
+          )}
         </div>
       </div>
 
@@ -451,6 +506,78 @@ export function EditorClient({
           </div>
         </div>
       </div>
+
+      {/* Publish Checklist Modal */}
+      {showPublishModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 max-w-md w-full p-6 space-y-4">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+              Pre-Publication Checklist
+            </h3>
+            <p className="text-xs text-gray-500">
+              All mandatory publishing fields must be completed before an article can go live.
+            </p>
+
+            <div className="space-y-2 text-xs border border-gray-100 dark:border-gray-800 p-3 rounded-lg bg-gray-50/50 dark:bg-gray-800/30">
+              <div className={`flex items-center gap-2 ${hasTitle ? 'text-green-600' : 'text-red-500'}`}>
+                <span>{hasTitle ? '✓' : '✗'}</span>
+                <span>Title / Headline is complete</span>
+              </div>
+              <div className={`flex items-center gap-2 ${hasDesc ? 'text-green-600' : 'text-red-500'}`}>
+                <span>{hasDesc ? '✓' : '✗'}</span>
+                <span>Short description (preview summary) provided</span>
+              </div>
+              <div className={`flex items-center gap-2 ${hasSlug ? 'text-green-600' : 'text-red-500'}`}>
+                <span>{hasSlug ? '✓' : '✗'}</span>
+                <span>URL slug is formatted properly</span>
+              </div>
+              <div className={`flex items-center gap-2 ${hasCategory ? 'text-green-600' : 'text-red-500'}`}>
+                <span>{hasCategory ? '✓' : '✗'}</span>
+                <span>Primary category is selected</span>
+              </div>
+              <div className={`flex items-center gap-2 ${hasCover ? 'text-green-600' : 'text-red-500'}`}>
+                <span>{hasCover ? '✓' : '✗'}</span>
+                <span>Featured cover image path is set</span>
+              </div>
+              <div className={`flex items-center gap-2 ${hasContent ? 'text-green-600' : 'text-red-500'}`}>
+                <span>{hasContent ? '✓' : '✗'}</span>
+                <span>Article body contains content</span>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                Publication Note (saved in revision history)
+              </label>
+              <input
+                type="text"
+                value={publishNote}
+                onChange={(e) => setPublishNote(e.target.value)}
+                placeholder="e.g. Initial breaking release or update"
+                className="w-full px-3 py-1.5 border border-gray-300 dark:border-gray-700 rounded-lg text-xs dark:bg-gray-800 outline-none"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowPublishModal(false)}
+                className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg text-xs font-medium hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={!canPublish || isPending}
+                onClick={handlePublish}
+                className="px-5 py-2 bg-primary-600 hover:bg-primary-700 disabled:opacity-40 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors"
+              >
+                {isPending ? 'Publishing...' : 'Publish Live Now'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

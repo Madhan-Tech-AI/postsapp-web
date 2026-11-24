@@ -9,6 +9,7 @@ import {
   archiveArticle,
   deleteArticle,
 } from './articles.service'
+import { publishArticle, unpublishArticle } from './publishing.service'
 import type { LanguageCode } from '@/lib/schemas'
 
 export interface ArticleActionResult {
@@ -133,6 +134,38 @@ export async function deleteArticleAction(articleId: string): Promise<ArticleAct
   }
 
   const result = await deleteArticle(articleId, profile.id, profile.role)
+  if (result.success) {
+    revalidatePath('/admin/articles')
+  }
+  return result
+}
+
+export async function publishArticleAction(
+  articleId: string,
+  note?: string
+): Promise<ArticleActionResult> {
+  const profile = await getAuthenticatedUserProfile()
+  if (!profile || !['author', 'editor', 'super_admin'].includes(profile.role)) {
+    return { success: false, error: 'Unauthorized' }
+  }
+
+  const result = await publishArticle(articleId, profile.id, note)
+  if (result.success) {
+    revalidatePath('/admin/articles')
+  }
+  return result
+}
+
+export async function unpublishArticleAction(
+  articleId: string,
+  note?: string
+): Promise<ArticleActionResult> {
+  const profile = await getAuthenticatedUserProfile()
+  if (!profile || !['author', 'editor', 'super_admin'].includes(profile.role)) {
+    return { success: false, error: 'Unauthorized' }
+  }
+
+  const result = await unpublishArticle(articleId, profile.id, note)
   if (result.success) {
     revalidatePath('/admin/articles')
   }
