@@ -12,10 +12,12 @@ import { z } from 'zod'
 export const languageCodeSchema = z.enum(['en', 'ta'])
 export const userRoleSchema = z.enum(['reader', 'author', 'editor', 'super_admin'])
 export const articleStatusSchema = z.enum(['draft', 'published', 'archived'])
+export const mediaTypeSchema = z.enum(['image', 'youtube_embed'])
 
 export type LanguageCode = z.infer<typeof languageCodeSchema>
 export type UserRole = z.infer<typeof userRoleSchema>
 export type ArticleStatus = z.infer<typeof articleStatusSchema>
+export type MediaType = z.infer<typeof mediaTypeSchema>
 
 // ============================================================
 // Auth schemas
