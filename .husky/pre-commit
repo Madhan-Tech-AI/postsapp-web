@@ -1,0 +1,11 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Pre-commit: run secret scanning and lint
+echo "🔍 Scanning for secrets..."
+npx gitleaks protect --config .gitleaks.toml --staged --redact
+
+echo "🔍 Type-checking..."
+npx tsc --noEmit
+
+echo "✅ Pre-commit checks passed"

@@ -1,0 +1,104 @@
+{
+  "nav": {
+    "home": "Home",
+    "latest": "Latest",
+    "trending": "Trending",
+    "search": "Search",
+    "login": "Log In",
+    "logout": "Log Out",
+    "profile": "Profile",
+    "admin": "Admin"
+  },
+  "home": {
+    "breaking_news": "Breaking News",
+    "featured": "Featured",
+    "latest": "Latest News",
+    "trending": "Trending",
+    "most_read": "Most Read",
+    "category": "Category",
+    "read_more": "Read More"
+  },
+  "article": {
+    "by": "By",
+    "published": "Published",
+    "updated": "Updated",
+    "reading_time": "{minutes} min read",
+    "like": "Like",
+    "unlike": "Unlike",
+    "share": "Share",
+    "related": "Related Articles",
+    "not_found": "Article not found"
+  },
+  "auth": {
+    "login": "Log In",
+    "register": "Create Account",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot password?",
+    "reset_password": "Reset Password",
+    "confirm_password": "Confirm Password",
+    "display_name": "Display Name",
+    "verify_email": "Verify your email",
+    "verify_email_desc": "We've sent a verification link to your email. Click it to continue.",
+    "login_to_like": "Log in to like articles",
+    "account_deleted": "Your account has been deleted",
+    "delete_account": "Delete Account"
+  },
+  "search": {
+    "placeholder": "Search articles...",
+    "results": "Search results for \"{query}\"",
+    "no_results": "No articles found for \"{query}\"",
+    "try_different": "Try different keywords"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "articles": "Articles",
+    "new_article": "New Article",
+    "categories": "Categories",
+    "tags": "Tags",
+    "authors": "Authors",
+    "readers": "Readers",
+    "media": "Media Library",
+    "analytics": "Analytics",
+    "audit_logs": "Audit Logs",
+    "settings": "Site Settings"
+  },
+  "editor": {
+    "title_placeholder": "Article title",
+    "subtitle_placeholder": "Subtitle (optional)",
+    "description_placeholder": "Short description for preview cards (required to publish)",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "offline": "Offline",
+    "publish": "Publish",
+    "archive": "Archive",
+    "preview": "Preview",
+    "word_count": "{count} words",
+    "reading_time": "{minutes} min read",
+    "publish_checklist": "Before publishing, please complete:",
+    "missing_title": "Title is required",
+    "missing_description": "Short description is required",
+    "missing_cover": "Cover image is required",
+    "missing_category": "Category is required"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "not_found": "Page not found",
+    "not_found_desc": "The page you're looking for doesn't exist.",
+    "server_error": "Server error",
+    "server_error_desc": "We're experiencing technical difficulties. Please try again later.",
+    "unauthorized": "You don't have permission to view this page."
+  },
+  "footer": {
+    "about": "About",
+    "contact": "Contact",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "© {year} PostsApp. All rights reserved."
+  },
+  "language": {
+    "select": "Language",
+    "en": "English",
+    "ta": "தமிழ்"
+  }
+}

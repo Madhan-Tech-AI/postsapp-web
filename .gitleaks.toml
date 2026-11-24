@@ -1,0 +1,26 @@
+title = "PostsApp secret scanning"
+version = 8
+
+[[rules]]
+id = "supabase-service-role-key"
+description = "Supabase service role key"
+regex = '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+'''
+keywords = ["service_role", "SUPABASE_SERVICE_ROLE_KEY"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic high-entropy string in common key variable names"
+regex = '''(?i)(api[_-]?key|secret[_-]?key|access[_-]?token|auth[_-]?token|private[_-]?key)\s*[:=]\s*["']?[A-Za-z0-9/+]{32,}["']?'''
+entropy = 3.5
+
+[allowlist]
+paths = [
+  ".env.example",
+  "docs/",
+  "SECURITY.md"
+]
+commits = []
+regexes = [
+  '''your-.*-here''',
+  '''placeholder''',
+]

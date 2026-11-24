@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-noto-sans: 'Noto Sans', system-ui, sans-serif;
+    --font-noto-serif: 'Noto Serif', Georgia, serif;
+    --font-noto-sans-tamil: 'Noto Sans Tamil', sans-serif;
+    --font-noto-serif-tamil: 'Noto Serif Tamil', serif;
+  }
+
+  /* Tamil-specific typography overrides */
+  :lang(ta) {
+    font-family: var(--font-noto-sans-tamil), var(--font-noto-sans), sans-serif;
+    line-height: 2;
+    word-break: keep-all; /* Prevent breaking inside Tamil glyph clusters */
+  }
+
+  :lang(ta) h1,
+  :lang(ta) h2,
+  :lang(ta) h3,
+  :lang(ta) h4 {
+    line-height: 1.75;
+  }
+
+  /* Accessible focus styles */
+  :focus-visible {
+    outline: 2px solid #ef4444;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Skip link */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .skip-link:focus {
+    position: static;
+    width: auto;
+    height: auto;
+  }
+}
+
+@layer utilities {
+  /* Tamil glyph cluster protection */
+  .tamil-safe {
+    overflow-wrap: break-word;
+    word-break: keep-all;
+    hyphens: none;
+  }
+
+  /* Clamp text with Tamil-safe settings */
+  .line-clamp-tamil-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: keep-all;
+  }
+
+  .line-clamp-tamil-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: keep-all;
+  }
+}
