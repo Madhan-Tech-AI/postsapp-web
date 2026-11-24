@@ -10,6 +10,7 @@ import { LikeButton } from '@/modules/engagement/components/like-button'
 import { ArticleRenderer } from '@/modules/articles/components/article-renderer'
 import { NewsCard } from '@/components/news/news-card'
 import { ShareButtons } from '@/components/news/share-buttons'
+import { ViewTracker } from '@/components/news/view-tracker'
 import { NewsArticleJsonLd } from '@/components/seo/news-article-jsonld'
 import { formatDate, getStorageUrl } from '@/lib/utils'
 import type { LanguageCode } from '@/lib/schemas'
@@ -101,6 +102,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <>
       <NewsArticleJsonLd article={article} />
+      <ViewTracker articleId={article.id} />
 
       <main id="main-content" className="max-w-4xl mx-auto px-4 py-8">
         {/* Breadcrumb Navigation */}

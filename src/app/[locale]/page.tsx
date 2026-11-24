@@ -2,6 +2,7 @@ import React from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getHomepageFeed, getPublicCategories } from '@/modules/public/public-queries'
+import { getTrendingAndMostRead } from '@/modules/engagement/trending.service'
 import { HeroNewsCard } from '@/components/news/hero-news-card'
 import { NewsCard } from '@/components/news/news-card'
 import type { LanguageCode } from '@/lib/schemas'
@@ -52,9 +53,10 @@ export default async function HomePage({ params }: HomePageProps) {
   const lang = locale as LanguageCode
   const isTa = lang === 'ta'
 
-  const [{ featured, latest, remaining }, categories] = await Promise.all([
+  const [{ featured, latest, remaining }, categories, { trending }] = await Promise.all([
     getHomepageFeed(lang),
     getPublicCategories(lang),
+    getTrendingAndMostRead(lang, 5),
   ])
 
   return (
@@ -109,17 +111,19 @@ export default async function HomePage({ params }: HomePageProps) {
 
           {/* Sidebar: Trending / Compact list */}
           <aside className="lg:col-span-4 space-y-6">
-            <div className="bg-gray-50 dark:bg-gray-900/60 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
-              <h3 className="text-sm font-black uppercase tracking-wider text-gray-900 dark:text-white mb-3 flex items-center space-x-2">
-                <span className="text-primary-600">★</span>
-                <span>{isTa ? 'பிரபலமானவை' : 'Trending'}</span>
-              </h3>
-              <div className="divide-y divide-gray-100 dark:divide-gray-800">
-                {remaining.slice(4).map((article) => (
-                  <NewsCard key={article.id} article={article} locale={locale} compact />
-                ))}
+            {trending.length > 0 && (
+              <div className="bg-gray-50 dark:bg-gray-900/60 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
+                <h3 className="text-sm font-black uppercase tracking-wider text-gray-900 dark:text-white mb-3 flex items-center space-x-2">
+                  <span className="text-primary-600">★</span>
+                  <span>{isTa ? 'பிரபலமானவை' : 'Trending'}</span>
+                </h3>
+                <div className="divide-y divide-gray-100 dark:divide-gray-800">
+                  {trending.map((article) => (
+                    <NewsCard key={article.id} article={article} locale={locale} compact />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Category Chips Cloud */}
             <div className="bg-gray-50 dark:bg-gray-900/60 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
